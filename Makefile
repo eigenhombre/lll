@@ -1,11 +1,17 @@
-.PHONY: all prog test docker
+.PHONY: all prog test docker readme
 
-all: prog
+all: prog readme test
 
-PROG = starter
+PROG = lll
+
+${PROG}: *.go
+	go build .
 
 test:
 	go test -v
 
 docker:
 	docker build -t ${PROG} .
+
+readme:
+	python updatereadme.py
