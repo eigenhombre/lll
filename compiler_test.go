@@ -13,9 +13,12 @@ func compileAndRun(s string, t *testing.T) string {
 	f, err := os.Create("output.ll")
 	assert.NilError(t, err, "could not create output.ll")
 	defer f.Close()
-	f.Write([]byte(compile(s)))
+	llvmText := compile(s)
+	f.Write([]byte(llvmText))
+	// fmt.Println("Wrote output.ll")
+	// fmt.Print(llvmText)
 	// Compile resulting LLVM:
-	cmd := exec.Command("clang", "output.ll", "-o", "output")
+	cmd := exec.Command("clang", "output.ll", "_print.c", "-o", "output")
 	stdout, err := cmd.Output()
 	assert.NilError(t, err, "clang should not fail")
 	assert.DeepEqual(t, string(stdout), "")
@@ -25,6 +28,19 @@ func compileAndRun(s string, t *testing.T) string {
 	return string(stdout)
 }
 
-func TestHelloWorld(t *testing.T) {
-	assert.DeepEqual(t, compileAndRun("foo", t), "Hello, world!\n\n")
+func Test(t *testing.T) {
+	testCases := []struct {
+		input    string
+		expected string
+	}{
+		{"1", "1\n"},
+		{"1\n", "1\n"},
+		{"  1\n", "1\n"},
+		{"2", "2\n"},
+		{"99999", "99999\n"},
+	}
+	// Loop over all the test cases:
+	for _, tc := range testCases {
+		assert.DeepEqual(t, compileAndRun(tc.input, t), tc.expected)
+	}
 }

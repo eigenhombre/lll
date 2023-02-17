@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/llir/llvm/ir"
 	"github.com/llir/llvm/ir/constant"
@@ -27,24 +29,19 @@ func GetStdin() string {
 	return s
 }
 
-func compile(_ string) string {
-	// Create a new LLVM IR module.
+func compile(src string) string {
+	// For now, just have LLVM echo the input number.
+	n, err := strconv.Atoi(strings.Trim(src, " \n\t"))
+	if err != nil {
+		panic(err)
+	}
 	m := ir.NewModule()
-	hello := constant.NewCharArrayFromString("Hello, world!\n\x00")
-	str := m.NewGlobalDef("str", hello)
-	// link to external function puts
-	puts := m.NewFunc("puts", types.I32,
-		ir.NewParam("",
-			types.NewPointer(types.I8)))
+	print := m.NewFunc("_print_int", types.Void,
+		ir.NewParam("x", types.I32))
 	main := m.NewFunc("main", types.I32)
 	entry := main.NewBlock("")
-	zero := constant.NewInt(types.I8, 0)
-	// Perform cast per [1]:
-	gep := constant.NewGetElementPtr(hello.Typ, str, zero, zero)
-	entry.NewCall(puts, gep)
-	entry.NewRet(constant.NewInt(types.I32, 0))
+	zero := constant.NewInt(types.I32, 0)
+	entry.NewCall(print, constant.NewInt(types.I32, int64(n)))
+	entry.NewRet(zero)
 	return fmt.Sprint(m)
 }
-
-// [1] See also:
-// https://github.com/anoopsarkar/compilers-class-hw/blob/master/llvm-practice/helloworld.ll
