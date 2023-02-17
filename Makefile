@@ -1,11 +1,11 @@
-.PHONY: all prog
+.PHONY: all prog test docker
 
 all: prog
 
 PROG = starter
 
-prog: ${PROG}.go
-	go build -o ${PROG} ${PROG}.go
-
-test: prog
+test:
 	go test -v
+
+docker:
+	docker build -t ${PROG} .
