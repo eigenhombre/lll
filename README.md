@@ -36,7 +36,7 @@ For the moment, see `compiler_test.go` to get an idea of the direction.
     $ clang answer.ll _print.c -o answer
     
     $ ls -l answer
-    -rwxr-xr-x  1 jacobsen  staff  49464 Feb 18 21:48 answer
+    -rwxr-xr-x  1 jacobsen  staff  49464 Feb 19 10:17 answer
     
     $ ./answer
     42

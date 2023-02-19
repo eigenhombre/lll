@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 )
@@ -9,6 +10,8 @@ import (
 func main() {
 	if len(os.Args) != 2 {
 		repl()
+		fmt.Println()
+		os.Exit(0)
 	}
 	path := os.Args[1]
 	src := readFile(path)
@@ -28,23 +31,31 @@ func readFile(path string) string {
 	return string(b)
 }
 
-func readLine() string {
+func readLine() (string, error) {
 	var s string
 	_, err := fmt.Scanln(&s)
+
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return s
+	return s, nil
 }
 
 func repl() {
 top:
 	fmt.Print("> ")
-	for {
-		s := readLine()
-		if s == "" {
-			goto top
-		}
-		fmt.Print(compile(s))
+	s, err := readLine()
+	switch err {
+	case nil:
+	case io.EOF:
+		goto done // Spaghetti, anyone?
+	default:
+		panic(err)
 	}
+	if s == "" {
+		goto top
+	}
+	fmt.Print(compile(s))
+	goto top
+done:
 }
