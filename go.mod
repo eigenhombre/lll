@@ -14,4 +14,5 @@ require (
 	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
+	tinygo.org/x/go-llvm v0.0.0-20221212185523-e80bc424a2b1 // indirect
 )
