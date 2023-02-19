@@ -11,7 +11,8 @@ def execute(code):
     return out.decode('utf-8')
 
 steps = ["go build .",
-         "echo 42 | ./lll > answer.ll",
+         "echo 42 > fortytwo",
+         "./lll fortytwo > answer.ll",
          "cat answer.ll",
          "clang answer.ll _print.c -o answer",
          "ls -l answer",

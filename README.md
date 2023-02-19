@@ -20,7 +20,9 @@ For the moment, see `compiler_test.go` to get an idea of the direction.
     
     $ go build .
     
-    $ echo 42 | ./lll > answer.ll
+    $ echo 42 > fortytwo
+    
+    $ ./lll fortytwo > answer.ll
     
     $ cat answer.ll
     declare void @_print_int(i32 %x)
@@ -34,7 +36,7 @@ For the moment, see `compiler_test.go` to get an idea of the direction.
     $ clang answer.ll _print.c -o answer
     
     $ ls -l answer
-    -rwxr-xr-x  1 jacobsen  staff  49464 Feb 18 20:12 answer
+    -rwxr-xr-x  1 jacobsen  staff  49464 Feb 18 21:48 answer
     
     $ ./answer
     42

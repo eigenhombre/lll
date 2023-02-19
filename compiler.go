@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
@@ -10,24 +9,6 @@ import (
 	"github.com/llir/llvm/ir/constant"
 	"github.com/llir/llvm/ir/types"
 )
-
-func main() {
-	fmt.Print(compile(GetStdin()))
-}
-
-// GetStdin reads all of stdin and returns it as a string.
-func GetStdin() string {
-	s := ""
-	for {
-		b := make([]byte, 1024)
-		n, err := os.Stdin.Read(b)
-		if err != nil {
-			break
-		}
-		s += string(b[:n])
-	}
-	return s
-}
 
 type Int struct {
 	Value int
