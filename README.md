@@ -45,10 +45,14 @@ For the moment, see `compiler_test.go` to get an idea of the direction.
 
 # Use Cases
 
-I want to support the following use cases.
+For the moment, I want to support the following use cases.
 
 - Compile and execute expressions from the REPL.
 - Compile a program to disk and execute it later, or on another machine.
+
+# License
+
+MIT
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
