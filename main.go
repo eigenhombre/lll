@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
+
+	"tinygo.org/x/go-llvm"
 )
 
 func main() {
@@ -32,16 +35,22 @@ func readFile(path string) string {
 }
 
 func readLine() (string, error) {
-	var s string
-	_, err := fmt.Scanln(&s)
-
-	if err != nil {
+	bio := bufio.NewReader(os.Stdin)
+	// FIXME: don't discard hasMoreInLine
+	line, _, err := bio.ReadLine()
+	switch err {
+	case nil:
+		return string(line), nil
+	default:
 		return "", err
 	}
-	return s, nil
 }
 
 func repl() {
+	var num int
+	var parseTree Expr
+	var compiledUnit llvm.Module
+	var result int
 top:
 	fmt.Print("> ")
 	s, err := readLine()
@@ -50,12 +59,17 @@ top:
 	case io.EOF:
 		goto done // Spaghetti, anyone?
 	default:
-		panic(err)
+		fmt.Println(err)
+		goto top
 	}
 	if s == "" {
 		goto top
 	}
-	fmt.Print(compile(s))
+	parseTree = lexAndParse(s)
+	num = parseTree.(Int).Value
+	compiledUnit = Compile1(num)
+	result = Exec1(compiledUnit)
+	fmt.Println(result)
 	goto top
 done:
 }

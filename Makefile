@@ -1,14 +1,21 @@
-.PHONY: all prog test docker readme
+.PHONY: all prog docker readme deps
 
-all: prog readme test
+PROG=lll
 
-PROG = lll
+all: ${PROG}
+
+deps:
+	go get .
 
 ${PROG}: *.go
 	go build .
 
-test:
+install: ${PROG}
+	go install .
+
+test: ${PROG} .TESTED
 	go test -v
+	touch .TESTED
 
 docker:
 	docker build -t ${PROG} .

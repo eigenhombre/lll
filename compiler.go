@@ -8,6 +8,7 @@ import (
 	"github.com/llir/llvm/ir"
 	"github.com/llir/llvm/ir/constant"
 	"github.com/llir/llvm/ir/types"
+	"tinygo.org/x/go-llvm"
 )
 
 type Int struct {
@@ -42,4 +43,34 @@ func compile(src string) string {
 	entry.NewCall(print, constant.NewInt(types.I32, int64(ast)))
 	entry.NewRet(zero)
 	return fmt.Sprint(m)
+}
+
+// c.f.: https://stackoverflow.com/questions/36870139/
+func Compile1(arg int) llvm.Module {
+	builder := llvm.NewBuilder()
+	mod := llvm.NewModule("test")
+	main := llvm.FunctionType(llvm.Int32Type(), []llvm.Type{}, false)
+	llvm.AddFunction(mod, "main", main)
+	block := llvm.AddBasicBlock(mod.NamedFunction("main"), "entry")
+	builder.SetInsertPoint(block, block.FirstInstruction())
+	y := uint64(arg)
+	builder.CreateRet(llvm.ConstInt(llvm.Int32Type(), y, false))
+	return mod
+}
+
+func Exec1(mod llvm.Module) int {
+	// verify module correctness
+	if ok := llvm.VerifyModule(mod, llvm.ReturnStatusAction); ok != nil {
+		fmt.Println(ok.Error())
+	}
+	// mod.Dump()
+	// create our execution engine
+	engine, err := llvm.NewExecutionEngine(mod)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	// run the function!
+	funcResult := engine.RunFunction(mod.NamedFunction("main"), []llvm.GenericValue{})
+	result := funcResult.Int(false)
+	return int(result)
 }
