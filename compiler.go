@@ -31,8 +31,10 @@ func lexAndParse(src string) Expr {
 	return Int{n}
 }
 
-func compile(src string) string {
+func CompileExternal(src string) string {
 	// For now, just have LLVM echo the input number.
+	// FIXME: Change this to use go-llvm and link to
+	// _print_int or some Go output function.
 	ast := lexAndParse(src).(Int).Value
 	m := ir.NewModule()
 	print := m.NewFunc("_print_int", types.Void,
@@ -46,7 +48,7 @@ func compile(src string) string {
 }
 
 // c.f.: https://stackoverflow.com/questions/36870139/
-func Compile1(arg int) llvm.Module {
+func CompileInternal(arg int) llvm.Module {
 	builder := llvm.NewBuilder()
 	mod := llvm.NewModule("test")
 	main := llvm.FunctionType(llvm.Int32Type(), []llvm.Type{}, false)
@@ -58,7 +60,7 @@ func Compile1(arg int) llvm.Module {
 	return mod
 }
 
-func Exec1(mod llvm.Module) int {
+func ExecInternal(mod llvm.Module) int {
 	// verify module correctness
 	if ok := llvm.VerifyModule(mod, llvm.ReturnStatusAction); ok != nil {
 		fmt.Println(ok.Error())

@@ -18,7 +18,7 @@ func main() {
 	}
 	path := os.Args[1]
 	src := readFile(path)
-	fmt.Print(compile(src))
+	fmt.Print(CompileExternal(src))
 }
 
 func readFile(path string) string {
@@ -67,8 +67,8 @@ top:
 	}
 	parseTree = lexAndParse(s)
 	num = parseTree.(Int).Value
-	compiledUnit = Compile1(num)
-	result = Exec1(compiledUnit)
+	compiledUnit = CompileInternal(num)
+	result = ExecInternal(compiledUnit)
 	fmt.Println(result)
 	goto top
 done:

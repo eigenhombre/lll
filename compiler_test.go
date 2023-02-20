@@ -13,7 +13,7 @@ func compileAndRun(s string, t *testing.T) string {
 	f, err := os.Create("output.ll")
 	assert.NilError(t, err, "could not create output.ll")
 	defer f.Close()
-	llvmText := compile(s)
+	llvmText := CompileExternal(s)
 	f.Write([]byte(llvmText))
 	// fmt.Println("Wrote output.ll")
 	// fmt.Print(llvmText)
@@ -46,8 +46,8 @@ func TestEndToEndIntegration(t *testing.T) {
 }
 
 func TestLiveFunctionExecution(t *testing.T) {
-	mod := Compile1(999)
-	result := Exec1(mod)
+	mod := CompileInternal(999)
+	result := ExecInternal(mod)
 	if result != 999 {
 		t.Errorf("Unexpected result, wanted 999, got %d", result)
 	}

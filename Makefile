@@ -2,7 +2,7 @@
 
 PROG=lll
 
-all: ${PROG}
+all: ${PROG} test
 
 deps:
 	go get .
@@ -13,12 +13,11 @@ ${PROG}: *.go
 install: ${PROG}
 	go install .
 
-test: ${PROG} .TESTED
+test: ${PROG}
 	go test -v
-	touch .TESTED
 
 docker:
 	docker build -t ${PROG} .
 
-readme:
+doc:
 	python updatereadme.py
